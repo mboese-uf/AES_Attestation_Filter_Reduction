@@ -9,7 +9,7 @@ Wikimedia dumps are provided through "https://dumps.wikimedia.org/other/mediawik
 
 
 (Citation:: Wikimedia Foundation. (2026). English Wikipedia database dump [Data set]. Wikimedia Downloads. [https://dumps.wikimedia.org/enwiki/
-](https://dumps.wikimedia.org/other/mediawiki_content_current/enwiki/)
+](https://dumps.wikimedia.org/other/mediawiki_content_current/enwiki/), 
 Wikimedia Foundation. (2026). Chinese Wikipedia database dump [Data set]. Wikimedia Downloads. [https://dumps.wikimedia.org/zhwiki/
 ](https://dumps.wikimedia.org/other/mediawiki_content_current/zhwiki/) )
 
