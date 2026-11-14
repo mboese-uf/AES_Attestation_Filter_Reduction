@@ -29,7 +29,7 @@ def loadAttest(fileName):
         #Skip the header
         next(reader)
         #Go through each row
-        for i, row in tqdm(enumerate(reader)):
+        for i, row in enumerate(reader):
             #Check the values in each index (make sure they aren't empty)
             if row[1] != "":
                 row1 = int(row[1])
@@ -196,10 +196,10 @@ def isAttested(attestData, block):
 def decryptTask(initial, correctKey, nr=14):
     #Grab globals
     global endTime
-    global badKeyEvent
     global currentKey
     global stateList
     global keyDict
+    global badKeyEvent
     
     #Only operate while time isn't out
     while (time.monotonic() < endTime) and (not badKeyEvent.is_set()):
@@ -236,10 +236,15 @@ def runTest(initialMessage):
     fromReverseTK = fromReverseTK[0:8]
     testBlock = AES.cipher(initialMessage, fromReverseTK, 14)
 
+    threads = []
     threadNum = 8
-    for i in range(threadNum):
+    for thread in range(threadNum):
         t = threading.Thread(target=decryptTask, args=(testBlock, trueKey))
         t.start()
+        threads.append(t)
+
+    for t in threads:
+        t.join()
 
 
     print("Total possible keys found: "+str(len(keyDict[True])))
@@ -249,7 +254,6 @@ def runTest(initialMessage):
 #TESTS
 #Make sure a language was properly recognized
 if language is not None:
-
     #===================== CREATE LIST OF MESSAGES =====================
     #Make a list to hold 5 messages from the language
     messList = []
@@ -262,9 +266,13 @@ if language is not None:
         randomStart = np.random.randint(0, maxSize)
         #Open the file
         with open(sys.argv[1], "r", encoding="utf-8") as file:
-            #Starting from the random start point, read 
-            file.seek(randomStart)
-            randomBytes = file.read(16, encoding="utf-8")
+             #Starting from the random start point, read 
+            try:
+                file.seek(randomStart)
+                randomBytes = file.read(16)
+            #If the start point was an invalid utf code, add another round
+            except:
+                i -= 1
             #Append the message to the list
             messList.append(randomBytes)
 
@@ -280,6 +288,7 @@ if language is not None:
         block = AES.stringToBlocks(message)[0]
         runTest(block)
         badKeyEvent.clear()
+        keyDict = {True: [], False: []}
 
     print("\n============================================\n")
     #================================================================================
@@ -311,4 +320,3 @@ if language is not None:
 #Language failsafe
 else:
     print("INVALID LANGUAGE AT SYS ARG 2") 
-
